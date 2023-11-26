@@ -1,24 +1,21 @@
-def factorize(number):
-    # Implementation of a basic factorization logic
-    for i in range(2, int(number/2) + 1):
-        if number % i == 0:
-            return (i, int(number/i))
-    return None
+#!/bin/bash
 
-def main(input_file):
-    with open(input_file, 'r') as file:
-        for line in file:
-            number = int(line.strip())
-            factors = factorize(number)
-            print(f"{number}={factors[0]}*{factors[1]}")
+factorize() {
+    number=$1
+    for ((i=2; i<=$number/2; i++)); do
+        if [ $((number % i)) -eq 0 ]; then
+            echo "$number=$i*$(($number / $i))"
+            return
+        fi
+    done
+}
 
-if __name__ == "__main__":
-    import sys
+main() {
+    while IFS= read -r line; do
+        number=$(echo $line | tr -d '\r')
+        factorize "$number"
+    done < "$1"
+}
 
-    if len(sys.argv) != 2:
-        print("Usage: factors <file>")
-        sys.exit(1)
-
-    input_file = sys.argv[1]
-    main(input_file)
+main "$1"
 
